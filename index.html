@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Che Karma Stai Seminando? | Uno Come Voi</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1623;
+    --card: #1a2236;
+    --card2: #1e2a40;
+    --accent: #4f8ef7;
+    --accent2: #7bb3ff;
+    --accent-glow: rgba(79,142,247,0.18);
+    --text: #e8eef8;
+    --text-muted: #8da0be;
+    --border: rgba(79,142,247,0.18);
+    --success: #4fd1a0;
+    --danger: #f76f6f;
+    --bar-bg: rgba(79,142,247,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 16px 60px;
+    background-image: radial-gradient(ellipse at 20% 20%, rgba(79,142,247,0.07) 0%, transparent 60%),
+                      radial-gradient(ellipse at 80% 80%, rgba(123,179,255,0.05) 0%, transparent 60%);
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 36px;
+    margin-top: 16px;
+  }
+
+  .brand {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+    opacity: 0.9;
+  }
+
+  .caffè-number {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 7vw, 46px);
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+
+  h1 span {
+    color: var(--accent);
+  }
+
+  .subtitle {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  /* QUIZ CARD */
+  .quiz-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px 28px;
+    max-width: 560px;
+    width: 100%;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.35), 0 0 0 1px rgba(79,142,247,0.06);
+  }
+
+  /* PROGRESS */
+  .progress-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+
+  .q-counter {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  .progress-bar-wrap {
+    flex: 1;
+    height: 4px;
+    background: var(--bar-bg);
+    border-radius: 99px;
+    margin: 0 14px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 99px;
+    transition: width 0.4s cubic-bezier(.4,0,.2,1);
+    width: 0%;
+  }
+
+  .q-score {
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* QUESTION */
+  .question-block {
+    animation: fadeUp 0.35s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .q-scenario-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .q-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(16px, 4vw, 19px);
+    font-weight: 700;
+    line-height: 1.45;
+    color: var(--text);
+    margin-bottom: 26px;
+  }
+
+  /* OPTIONS */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .option-btn {
+    background: var(--card2);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    text-align: left;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.5;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .option-btn:hover {
+    border-color: var(--accent);
+    background: rgba(79,142,247,0.08);
+    transform: translateX(3px);
+  }
+
+  .option-btn.selected {
+    border-color: var(--accent);
+    background: rgba(79,142,247,0.13);
+    box-shadow: 0 0 0 3px rgba(79,142,247,0.1);
+  }
+
+  .option-letter {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--bar-bg);
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.2s;
+  }
+
+  .option-btn.selected .option-letter {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .option-text { flex: 1; }
+
+  /* NEXT BUTTON */
+  .next-btn {
+    margin-top: 24px;
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 15px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: none;
+    box-shadow: 0 4px 20px rgba(79,142,247,0.3);
+  }
+
+  .next-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(79,142,247,0.45);
+  }
+
+  .next-btn.visible { display: block; }
+
+  /* RESULT */
+  .result-block {
+    display: none;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .result-block.visible { display: block; }
+
+  .result-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(79,142,247,0.12);
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    padding: 6px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+
+  .result-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 6vw, 32px);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .result-score-line {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  .result-score-line strong {
+    color: var(--accent);
+  }
+
+  .result-desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    border-left: 3px solid var(--accent);
+    padding-left: 16px;
+  }
+
+  .result-action {
+    background: rgba(79,142,247,0.07);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+
+  .result-action strong {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .retry-btn {
+    width: 100%;
+    background: transparent;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 13px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .retry-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    opacity: 0.6;
+  }
+
+  .footer a {
+    color: var(--accent);
+    text-decoration: none;
+    opacity: 0.8;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">☕ Uno Come Voi</div>
+  <div class="caffè-number">· Il test dell'articolo ·</div>
+  <h1>Che Karma<br><span>stai seminando?</span></h1>
+  <p class="subtitle">5 scenari concreti. Scopri se le tue azioni sono un boomerang che ti torna indietro carico di bene, o di guai.</p>
+</div>
+
+<div class="quiz-card" id="quizCard">
+
+  <!-- PROGRESS -->
+  <div class="progress-row">
+    <span class="q-counter" id="qCounter">Domanda 1 di 5</span>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+    <span class="q-score" id="scoreDisplay">0 pt</span>
+  </div>
+
+  <!-- QUESTION -->
+  <div class="question-block" id="questionBlock">
+    <div class="q-num" id="qNum">01 —</div>
+    <div class="q-scenario-label">Scenario</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsContainer"></div>
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Prossima domanda →</button>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-block" id="resultBlock">
+    <div class="result-badge">🪃 Il tuo profilo</div>
+    <div class="result-title" id="resultTitle"></div>
+    <div class="result-score-line" id="resultScoreLine"></div>
+    <div class="result-desc" id="resultDesc"></div>
+    <div class="result-action" id="resultAction"></div>
+    <button class="retry-btn" onclick="restartQuiz()">↩ Rifai il test</button>
+  </div>
+
+</div>
+
+<div class="footer">
+  Con Affetto — Teo ☕ &nbsp;·&nbsp; <a href="https://uno-come-voi.com" target="_blank">uno-come-voi.com</a>
+</div>
+
+<script>
+const questions = [
+  {
+    num: "01",
+    scenario: "Scenario",
+    text: "Qualcuno ti tratta male ingiustamente, magari davanti ad altre persone, e non vuole sentire ragioni. Cosa fai?",
+    options: [
+      { letter: "A", text: "Gli rispondo con la stessa moneta. Anzi, peggio.", points: 0 },
+      { letter: "B", text: "Cerco di chiarire con calma, e se non si può mi allontano senza rancore.", points: 4 },
+      { letter: "C", text: "Faccio finta di niente, ma me la lego al dito.", points: 1 },
+      { letter: "D", text: "Mi sfogo con tutti, tranne che con lui.", points: 2 }
+    ]
+  },
+  {
+    num: "02",
+    scenario: "Scenario",
+    text: "Fai un favore a qualcuno, ti costa tempo e fatica, e non ti dice nemmeno grazie. Come la vivi?",
+    options: [
+      { letter: "A", text: "Basta: da oggi favori a nessuno.", points: 0 },
+      { letter: "B", text: "Ci rimango male, ma la prossima volta lo rifarei.", points: 3 },
+      { letter: "C", text: "L'ho fatto perché mi andava: non mi aspettavo niente in cambio.", points: 4 },
+      { letter: "D", text: "Glielo rinfaccio alla prima occasione.", points: 1 }
+    ]
+  },
+  {
+    num: "03",
+    scenario: "Scenario",
+    text: "Devi prendere una decisione che coinvolge anche altre persone (al lavoro, in famiglia, tra amici). Come ti muovi?",
+    options: [
+      { letter: "A", text: "Penso a cosa conviene a me: gli altri si arrangiano.", points: 0 },
+      { letter: "B", text: "Ci penso dopo, quando ormai ho già deciso.", points: 1 },
+      { letter: "C", text: "Mi chiedo come si sentiranno gli altri, ma poi faccio comunque di testa mia.", points: 2 },
+      { letter: "D", text: "Mi fermo e mi chiedo: che conseguenze avrà, per me e per loro?", points: 4 }
+    ]
+  },
+  {
+    num: "04",
+    scenario: "Scenario",
+    text: "Vedi qualcuno che si è comportato male \"farla franca\". Cosa ti passa per la testa?",
+    options: [
+      { letter: "A", text: "Che il mondo è ingiusto e il Karma è una favola.", points: 2 },
+      { letter: "B", text: "Spero che qualcuno gliela faccia pagare. E se capita, una mano la do volentieri.", points: 0 },
+      { letter: "C", text: "Che le conseguenze arrivano, anche se ci mettono anni. Intanto io penso a comportarmi bene.", points: 4 },
+      { letter: "D", text: "Che allora tanto vale fare come lui.", points: 1 }
+    ]
+  },
+  {
+    num: "05",
+    scenario: "Scenario",
+    text: "Ti accorgi di aver ferito qualcuno, anche senza volerlo. Cosa fai?",
+    options: [
+      { letter: "A", text: "Aspetto che passi: col tempo si dimentica tutto.", points: 1 },
+      { letter: "B", text: "Mi scuso subito e cerco di rimediare, anche se mi costa.", points: 4 },
+      { letter: "C", text: "Mi giustifico: in fondo ha sbagliato anche lui.", points: 0 },
+      { letter: "D", text: "Mi scuso, ma solo se me lo fa notare.", points: 2 }
+    ]
+  }
+];
+
+const results = [
+  {
+    min: 0, max: 4,
+    title: "Il Boomerang Lanciato Male",
+    desc: "Quando qualcuno ti fa un torto, rispondi colpo su colpo, e quando fai del bene vuoi che ti venga restituito. È umano, ma è anche il modo più veloce per riempire la tua vita di conflitti. Il boomerang che lanci con rabbia, prima o poi, torna indietro. E di solito ti colpisce proprio quando non te lo aspetti.",
+    action: "⚡ La tua azione questa settimana: La prossima volta che qualcuno ti provoca, conta fino a dieci e non rispondere subito. Solo una volta. Poi osserva come va a finire: spesso la tempesta si sgonfia da sola."
+  },
+  {
+    min: 5, max: 8,
+    title: "Il Conto in Sospeso",
+    desc: "Non attacchi per primo/a, ma tieni il conto di tutto: i torti subiti, i favori non ricambiati, i grazie mai arrivati. Il problema è che quel conto lo paghi tu, ogni giorno, in rancore e pesantezza. Il Karma non ha bisogno del tuo registro: fa i conti da solo.",
+    action: "⚡ La tua azione questa settimana: Scegli un \"conto in sospeso\" che ti porti dietro da tempo e chiudilo. Non per l'altra persona: per te. Scrivilo su un foglio, poi strappalo. Sembra una sciocchezza, ma funziona."
+  },
+  {
+    min: 9, max: 12,
+    title: "Il Seminatore Distratto",
+    desc: "Nel profondo sei una persona buona, ma spesso agisci di fretta, senza pensare alle conseguenze. Semini un po' di tutto: gentilezza un giorno, impulsività quello dopo. E poi ti stupisci di quello che cresce. Ti manca solo un ingrediente: la consapevolezza, prima di agire.",
+    action: "⚡ La tua azione questa settimana: Prima di ogni decisione importante di questa settimana, fatti una sola domanda: \"Che conseguenze avrà, per me e per gli altri?\". Bastano dieci secondi per cambiare il raccolto."
+  },
+  {
+    min: 13, max: 16,
+    title: "Il Giardiniere Consapevole",
+    desc: "Sai che ogni azione è un seme, e cerchi di piantare quelli giusti. Non rispondi all'odio con l'odio, fai del bene senza aspettarti niente in cambio e quando sbagli lo ammetti. A volte la pazienza ti manca, soprattutto quando vedi qualcuno farla franca. Ma la strada è quella giusta.",
+    action: "⚡ La tua azione questa settimana: Fai un gesto gentile a qualcuno che non potrà mai ricambiarti (uno sconosciuto, un collega con cui non vai d'accordo). E non raccontarlo a nessuno: il bello è proprio quello."
+  },
+  {
+    min: 17, max: 20,
+    title: "Karma a Favore",
+    desc: "Per te il Karma non è una minaccia, ma un modo di vivere. Agisci con consapevolezza, chiedi scusa quando serve, lasci andare chi ti ha ferito senza augurargli il male. E hai capito una cosa che a molti sfugge: non devi essere tu a far pagare gli altri. Il tempo, prima o poi, mette ogni cosa al suo posto.",
+    action: "⚡ La tua azione questa settimana: Raccontalo! Scrivimi nei commenti (o nel Forum) una volta in cui hai visto il Karma all'opera, nel bene o nel male. La tua storia potrebbe convincere qualche scettico."
+  }
+];
+
+let currentQ = 0;
+let totalScore = 0;
+let selectedPoints = null;
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  document.getElementById('qCounter').textContent = `Domanda ${currentQ + 1} di ${questions.length}`;
+  document.getElementById('qNum').textContent = q.num + ' —';
+  document.getElementById('qText').textContent = q.text;
+  document.getElementById('progressBar').style.width = `${(currentQ / questions.length) * 100}%`;
+  document.getElementById('scoreDisplay').textContent = totalScore + ' pt';
+
+  const container = document.getElementById('optionsContainer');
+  container.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${opt.letter}</span><span class="option-text">${opt.text}</span>`;
+    btn.onclick = () => selectOption(i, opt.points, btn);
+    container.appendChild(btn);
+  });
+
+  selectedPoints = null;
+  const nb = document.getElementById('nextBtn');
+  nb.classList.remove('visible');
+  nb.textContent = currentQ < questions.length - 1 ? 'Prossima domanda →' : 'Scopri il tuo profilo →';
+
+  // re-animate
+  const qb = document.getElementById('questionBlock');
+  qb.style.animation = 'none';
+  qb.offsetHeight;
+  qb.style.animation = 'fadeUp 0.35s ease both';
+}
+
+function selectOption(index, points, btn) {
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedPoints = points;
+  document.getElementById('nextBtn').classList.add('visible');
+}
+
+function nextQuestion() {
+  if (selectedPoints === null) return;
+  totalScore += selectedPoints;
+
+  if (currentQ < questions.length - 1) {
+    currentQ++;
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById('questionBlock').style.display = 'none';
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('qCounter').textContent = `Completato!`;
+  document.getElementById('scoreDisplay').textContent = totalScore + ' pt';
+
+  const result = results.find(r => totalScore >= r.min && totalScore <= r.max) || results[results.length - 1];
+
+  document.getElementById('resultTitle').textContent = result.title;
+  document.getElementById('resultScoreLine').innerHTML = `Hai totalizzato <strong>${totalScore} punti</strong> su 20`;
+  document.getElementById('resultDesc').textContent = result.desc;
+  document.getElementById('resultAction').innerHTML = `<strong>⚡ La tua azione questa settimana</strong>${result.action.replace('⚡ La tua azione questa settimana: ', '')}`;
+
+  const rb = document.getElementById('resultBlock');
+  rb.classList.add('visible');
+}
+
+function restartQuiz() {
+  currentQ = 0;
+  totalScore = 0;
+  selectedPoints = null;
+  document.getElementById('questionBlock').style.display = 'block';
+  document.getElementById('resultBlock').classList.remove('visible');
+  renderQuestion();
+}
+
+renderQuestion();
+</script>
+</body>
+</html>
